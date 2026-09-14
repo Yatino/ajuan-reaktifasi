@@ -26,16 +26,17 @@
                 left: 0;
                 top: 0;
                 width: 210mm;
-                min-height: 297mm;
-                padding: 20mm 20mm 20mm 25mm;
+                height: 297mm;
+                padding: 15mm 20mm 15mm 25mm;
                 margin: 0;
                 background: white !important;
                 box-shadow: none !important;
                 border: none !important;
                 font-family: 'Times New Roman', Times, serif, 'Inter';
-                font-size: 12pt;
-                line-height: 1.5;
+                font-size: 11pt;
+                line-height: 1.4;
                 color: black !important;
+                overflow: hidden;
             }
             @page {
                 size: A4 portrait;
@@ -234,6 +235,7 @@
             </form>
         </div>
 
+        <!-- Pratinjau Surat Resmi (Diletakkan di bawah form) -->
         <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-8 sm:p-12 space-y-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
                 <div>
@@ -247,16 +249,16 @@
                         <i class="fa-regular fa-copy"></i> Salin Teks
                     </button>
                     <button onclick="window.print()" class="flex-1 sm:flex-none bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2 px-4 rounded-lg text-xs transition shadow flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-print"></i> Unduh / Cetak PDF
+                        <i class="fa-solid fa-print"></i> Cetak / Unduh PDF
                     </button>
                 </div>
             </div>
 
             <!-- Printable Official Letter Box -->
-            <div id="printable-letter" class="bg-white border border-slate-200 rounded-xl p-6 sm:p-10 text-[13px] font-serif text-slate-900 leading-relaxed shadow-inner space-y-6 max-w-[210mm] mx-auto">
+            <div id="printable-letter" class="bg-white border border-slate-200 rounded-xl p-6 sm:p-10 text-[13px] font-serif text-slate-900 leading-relaxed shadow-inner space-y-5 max-w-[210mm] mx-auto">
                 
                 <!-- Kop Surat -->
-                <div class="text-center pb-3 border-b-4 border-double border-slate-900 space-y-1">
+                <div class="text-center pb-2.5 border-b-4 border-double border-slate-900 space-y-0.5">
                     <p class="font-bold uppercase tracking-wider text-sm sm:text-base">KEMENTERIAN AGAMA REPUBLIK INDONESIA</p>
                     <p class="font-bold uppercase tracking-wider text-sm sm:text-base">KANTOR WILAYAH KEMENTERIAN AGAMA</p>
                     <p class="font-bold uppercase tracking-wider text-sm sm:text-base">PROVINSI JAWA TENGAH</p>
@@ -264,28 +266,28 @@
                 </div>
 
                 <!-- Perihal & Nomor -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans text-xs pt-2">
-                    <div class="space-y-1.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans text-xs pt-1">
+                    <div class="space-y-1">
                         <div class="flex"><span class="w-20 font-semibold">Nomor</span><span>: <span id="p-nomor">B-042/Kw.11.4/PP.00/09/2026</span></span></div>
                         <div class="flex"><span class="w-20 font-semibold">Lampiran</span><span>: 1 (satu) Berkas Pengajuan</span></div>
                         <div class="flex"><span class="w-20 font-semibold">Perihal</span><span class="font-bold text-emerald-900">: Permohonan Reaktivasi Siswa Luar Provinsi (EMIS)</span></div>
                     </div>
                     <div class="sm:text-right space-y-1">
                         <p>Kebumen, <span id="current-date">14 September 2026</span></p>
-                        <p class="pt-4">Kepada Yth.</p>
+                        <p class="pt-3">Kepada Yth.</p>
                         <p class="font-semibold">Tim Pengelola Data EMIS Kanwil Kemenag Provinsi Jawa Tengah</p>
                         <p>di Semarang</p>
                     </div>
                 </div>
 
                 <!-- Isi Surat -->
-                <div class="space-y-3 pt-2 text-justify font-sans text-xs sm:text-sm">
+                <div class="space-y-2 pt-1 text-justify font-sans text-xs sm:text-sm">
                     <p>Assalamu'alaikum Wr. Wb.</p>
                     <p>Sehubungan dengan adanya mutasi siswa masuk dari luar Provinsi ke Madrasah di lingkungan Kabupaten Kebumen, bersama surat ini kami mengajukan permohonan Reaktivasi Status Siswa pada sistem pendataan EMIS dengan data detail sebagai berikut:</p>
                 </div>
 
                 <!-- Detail Siswa & Lembaga Box -->
-                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-lg border border-slate-300 font-sans text-xs space-y-2">
+                <div class="bg-slate-50/80 p-3.5 sm:p-4 rounded-lg border border-slate-300 font-sans text-xs space-y-1.5">
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">NISN</span><span class="col-span-2 sm:col-span-3 font-bold text-slate-900" id="prev-nisn">0101118389</span></div>
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">Nama Lengkap</span><span class="col-span-2 sm:col-span-3 font-bold uppercase text-slate-900" id="prev-nama">KAFKA RYANTIARNO</span></div>
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">Tempat/Tgl Lahir</span><span class="col-span-2 sm:col-span-3" id="prev-ttl">KEBUMEN, 06 Mei 2010</span></div>
@@ -293,31 +295,38 @@
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">Ibu Kandung</span><span class="col-span-2 sm:col-span-3 uppercase" id="prev-ibu">TARMI</span></div>
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">Gender / Kelas</span><span class="col-span-2 sm:col-span-3"><span id="prev-gender">Laki-laki</span> / Kelas <span id="prev-kelas">11</span></span></div>
                     
-                    <div class="border-t border-slate-200 my-2 pt-2"></div>
+                    <div class="border-t border-slate-200 my-1.5 pt-1.5"></div>
                     
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">Lembaga Asal</span><span class="col-span-2 sm:col-span-3 uppercase font-medium text-rose-800" id="prev-asal">MAS NAHDLATUL ARIFIN (Jember (Jawa Timur))</span></div>
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">NPSN / NSM Asal</span><span class="col-span-2 sm:col-span-3"><span id="prev-npsnasal">20580302</span> / <span id="prev-nsmasal">131235090068</span></span></div>
                     
-                    <div class="border-t border-slate-200 my-2 pt-2"></div>
+                    <div class="border-t border-slate-200 my-1.5 pt-1.5"></div>
                     
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">Madrasah Tujuan</span><span class="col-span-2 sm:col-span-3 font-bold uppercase text-emerald-900" id="prev-tujuan">MAS PLUS NURURROHMAH (Kab. Kebumen)</span></div>
                     <div class="grid grid-cols-3 sm:grid-cols-4"><span class="font-semibold text-slate-700">NPSN / NSM Tujuan</span><span class="col-span-2 sm:col-span-3"><span id="prev-npsntujuan">20362997</span> / <span id="prev-nsmtujuan">1131233050020</span></span></div>
                 </div>
 
                 <!-- Alasan & Penutup -->
-                <div class="space-y-3 text-justify font-sans text-xs sm:text-sm">
+                <div class="space-y-2 text-justify font-sans text-xs sm:text-sm">
                     <p><strong>Alasan Pengajuan Reaktivasi:</strong> <span id="prev-alasan" class="italic text-rose-800 font-medium">Surat emis sudah kadaluarsa</span></p>
                     <p>Demikian permohonan ini kami sampaikan atas perhatian, verifikasi, dan bantuan reaktivasi data siswa pada sistem EMIS kami ucapkan terima kasih.</p>
-                    <p class="pt-2">Wassalamu'alaikum Wr. Wb.</p>
+                    <p>Wassalamu'alaikum Wr. Wb.</p>
                 </div>
 
                 <!-- Tanda Tangan -->
-                <div class="pt-12 flex justify-end font-sans text-xs sm:text-sm page-break-inside: avoid;">
-                    <div class="text-center space-y-20 w-72">
-                        <p>Kepala Madrasah Tujuan<br>Kabupaten Kebumen</p>
-                        <p class="font-bold underline uppercase tracking-wide pt-2" id="sign-name">H. AHMAD FAUZI, S.Pd.I</p>
+                <div class="pt-4 flex justify-end font-sans text-xs sm:text-sm page-break-inside: avoid;">
+                    <div class="text-center space-y-14 w-72">
+                        <p>Kepala <span id="prev-namalembagasingkat" class="font-semibold uppercase">MAS PLUS NURURROHMAH</span><br>Kabupaten Kebumen</p>
+                        <p class="font-bold underline uppercase tracking-wide pt-1" id="sign-name">H. AHMAD FAUZI, S.Pd.I</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Tombol Cetak / Unduh PDF di bawah pratinjau -->
+            <div class="flex justify-end pt-4 border-t border-slate-100">
+                <button onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-3 px-6 rounded-xl text-sm transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak / Unduh PDF (Format A4 Rapi)
+                </button>
             </div>
         </div>
     </main>
@@ -381,6 +390,7 @@
             document.getElementById('prev-tujuan').innerText = lembagaTujuan + ' (' + kotaTujuan + ')';
             document.getElementById('prev-npsntujuan').innerText = npsnTujuan;
             document.getElementById('prev-nsmtujuan').innerText = nsmTujuan;
+            document.getElementById('prev-namalembagasingkat').innerText = lembagaTujuan;
 
             document.getElementById('prev-alasan').innerText = alasanReaktivasi;
         }
