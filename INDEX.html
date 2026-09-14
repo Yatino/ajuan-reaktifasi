@@ -227,15 +227,17 @@
                 </div>
 
                 <!-- Action Button in Form -->
-                <div class="pt-2 flex justify-end">
-                    <button type="button" onclick="previewSurat()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition shadow flex items-center gap-2">
+                <div class="pt-2 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <button type="button" onclick="openWebhookModal()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-5 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-excel text-emerald-400"></i> Hubungkan ke Spreadsheet
+                    </button>
+                    <button type="button" onclick="previewSurat()" class="w-full sm:w-auto bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-rotate"></i> Perbarui Tampilan Surat di Bawah
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- Pratinjau Surat Resmi (Diletakkan di bawah form) -->
         <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-8 sm:p-12 space-y-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
                 <div>
@@ -314,8 +316,8 @@
                 </div>
 
                 <!-- Tanda Tangan -->
-                <div class="pt-4 flex justify-end font-sans text-xs sm:text-sm page-break-inside: avoid;">
-                    <div class="text-center space-y-14 w-72">
+                <div class="pt-2 flex justify-end font-sans text-xs sm:text-sm">
+                    <div class="text-center space-y-12 w-72">
                         <p>Kepala <span id="prev-namalembagasingkat" class="font-semibold uppercase">MAS PLUS NURURROHMAH</span><br>Kabupaten Kebumen</p>
                         <p class="font-bold underline uppercase tracking-wide pt-1" id="sign-name">H. AHMAD FAUZI, S.Pd.I</p>
                     </div>
@@ -323,13 +325,104 @@
             </div>
 
             <!-- Tombol Cetak / Unduh PDF di bawah pratinjau -->
-            <div class="flex justify-end pt-4 border-t border-slate-100">
-                <button onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-3 px-6 rounded-xl text-sm transition shadow-md flex items-center gap-2">
-                    <i class="fa-solid fa-print"></i> Cetak / Unduh PDF (Format A4 Rapi)
-                </button>
+            <div class="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-slate-100 gap-4">
+                <div id="sheet-status-indicator" class="text-xs text-slate-500 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span> Spreadsheet belum terhubung
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button onclick="submitToSpreadsheet()" id="btn-submit-sheet" class="flex-1 sm:flex-none bg-sky-700 hover:bg-sky-800 text-white font-medium py-3 px-5 rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Spreadsheet
+                    </button>
+                    <button onclick="window.print()" class="flex-1 sm:flex-none bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-3 px-6 rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Cetak / Unduh PDF (Format A4 Rapi)
+                    </button>
+                </div>
             </div>
         </div>
     </main>
+
+    <div id="webhookModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel text-emerald-600"></i> Hubungkan Google Spreadsheet & Script
+                </h3>
+                <button onclick="closeWebhookModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+            </div>
+            
+            <div class="text-xs text-slate-600 space-y-3 leading-relaxed">
+                <p>Ikuti langkah-langkah di bawah ini untuk menghubungkan form ke Google Sheets Anda:</p>
+                
+                <ol class="list-decimal list-inside space-y-1.5 text-slate-700 font-medium">
+                    <li>Buat <span class="text-emerald-700 font-bold">Google Sheet</span> baru, beri nama kolom di baris pertama persis seperti ini:
+                        <div class="bg-slate-100 p-2 rounded text-[11px] font-mono text-slate-800 mt-1 overflow-x-auto">
+                            timestamp | nomorSurat | nisn | nik | nama | tempatLahir | tanggalLahir | namaIbu | jenisKelamin | kelas | lembagaAsal | npsnAsal | nsmAsal | kotaAsal | lembagaTujuan | npsnTujuan | nsmTujuan | kotaTujuan | alasanReaktivasi | namaKepala
+                        </div>
+                    </li>
+                    <li>Di Google Sheet, klik menu <span class="font-bold">Extensions</span> > <span class="font-bold">Apps Script</span>.</li>
+                    <li>Hapus semua kode bawaan dan tempel kode Google Apps Script di bawah ini:</li>
+                </ol>
+
+                <!-- Code block to copy -->
+                <div class="relative bg-slate-900 text-emerald-400 p-3 rounded-lg font-mono text-[11px] overflow-x-auto">
+                    <button onclick="copyAppsScriptCode()" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-[10px] px-2 py-1 rounded">Salin Kode</button>
+                    <pre id="appsScriptCodeSnippet">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    
+    sheet.appendRow([
+      data.timestamp,
+      data.nomorSurat,
+      data.nisn,
+      data.nik,
+      data.nama,
+      data.tempatLahir,
+      data.tanggalLahir,
+      data.namaIbu,
+      data.jenisKelamin,
+      data.kelas,
+      data.lembagaAsal,
+      data.npsnAsal,
+      data.nsmAsal,
+      data.kotaAsal,
+      data.lembagaTujuan,
+      data.npsnTujuan,
+      data.nsmTujuan,
+      data.kotaTujuan,
+      data.alasanReaktivasi,
+      data.namaKepala
+    ]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({ "status": "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+                </div>
+
+                <ol start="4" class="list-decimal list-inside space-y-1 text-slate-700 font-medium">
+                    <li>Klik <span class="font-bold">Deploy</span> > <span class="font-bold">New deployment</span>.</li>
+                    <li>Pilih jenis <span class="font-bold">Web app</span>. Set Execute as: <span class="font-bold">Me</span>, dan Who has access: <span class="font-bold">Anyone</span>.</li>
+                    <li>Salin URL Web App yang dihasilkan dan tempel di bawah ini.</li>
+                </ol>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Web App URL</label>
+                <input type="text" id="webhookUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            </div>
+            
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeWebhookModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-medium">Batal</button>
+                <button onclick="saveWebhookUrl()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl text-xs font-medium shadow">Simpan URL</button>
+            </div>
+        </div>
+    </div>
 
     <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-500">
         <div class="max-w-4xl mx-auto px-4 space-y-1">
@@ -344,6 +437,113 @@
         const now = new Date();
         const dateStr = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
         document.getElementById('current-date').innerText = dateStr;
+
+        // Local Storage for Google Sheets Webhook URL
+        let webhookUrl = localStorage.getItem('emis_kebumen_webhook') || '';
+        if (webhookUrl) {
+            document.getElementById('webhookUrlInput').value = webhookUrl;
+            updateSheetStatus(true);
+        }
+
+        function openWebhookModal() {
+            document.getElementById('webhookModal').classList.remove('hidden');
+        }
+
+        function closeWebhookModal() {
+            document.getElementById('webhookModal').classList.add('hidden');
+        }
+
+        function copyAppsScriptCode() {
+            const codeText = document.getElementById('appsScriptCodeSnippet').innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = codeText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Berhasil Disalin!', 'Kode Apps Script disalin ke clipboard.', 'success');
+            } catch (err) {
+                showToast('Gagal Salin', 'Tidak dapat menyalin kode.', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function saveWebhookUrl() {
+            const url = document.getElementById('webhookUrlInput').value.trim();
+            webhookUrl = url;
+            localStorage.setItem('emis_kebumen_webhook', url);
+            closeWebhookModal();
+            if(url) {
+                updateSheetStatus(true);
+                showToast('Berhasil!', 'URL Spreadsheet berhasil disimpan.', 'success');
+            } else {
+                updateSheetStatus(false);
+                showToast('Dihapus', 'Koneksi spreadsheet dihapus.', 'warning');
+            }
+        }
+
+        function updateSheetStatus(isConnected) {
+            const indicator = document.getElementById('sheet-status-indicator');
+            if(isConnected) {
+                indicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Spreadsheet terhubung';
+            } else {
+                indicator.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span> Spreadsheet belum terhubung';
+            }
+        }
+
+        async function submitToSpreadsheet() {
+            if(!webhookUrl) {
+                showToast('Perhatian', 'Harap hubungkan Google Spreadsheet terlebih dahulu melalui tombol "Hubungkan ke Spreadsheet".', 'warning');
+                openWebhookModal();
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-sheet');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+            const payload = {
+                timestamp: new Date().toISOString(),
+                nomorSurat: document.getElementById('nomorSurat').value,
+                nisn: document.getElementById('nisn').value,
+                nik: document.getElementById('nik').value,
+                nama: document.getElementById('nama').value,
+                tempatLahir: document.getElementById('tempatLahir').value,
+                tanggalLahir: document.getElementById('tanggalLahir').value,
+                namaIbu: document.getElementById('namaIbu').value,
+                jenisKelamin: document.getElementById('jenisKelamin').value,
+                kelas: document.getElementById('kelas').value,
+                lembagaAsal: document.getElementById('lembagaAsal').value,
+                npsnAsal: document.getElementById('npsnAsal').value,
+                nsmAsal: document.getElementById('nsmAsal').value,
+                kotaAsal: document.getElementById('kotaAsal').value,
+                lembagaTujuan: document.getElementById('lembagaTujuan').value,
+                npsnTujuan: document.getElementById('npsnTujuan').value,
+                nsmTujuan: document.getElementById('nsmTujuan').value,
+                kotaTujuan: document.getElementById('kotaTujuan').value,
+                alasanReaktivasi: document.getElementById('alasanReaktivasi').value,
+                namaKepala: document.getElementById('namaKepala').value
+            };
+
+            try {
+                await fetch(webhookUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                showToast('Berhasil Terkirim!', 'Data pengajuan reaktivasi berhasil disimpan ke Google Spreadsheet.', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal Kirim', 'Terjadi kesalahan saat mengirim ke Spreadsheet. Periksa kembali URL Web App.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Kirim ke Spreadsheet';
+            }
+        }
 
         function updatePreview() {
             // Fetch inputs
